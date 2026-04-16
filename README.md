@@ -11,11 +11,11 @@ AI 더미 서버 확인 가능: http://localhost/ai/health \n
 - `.env` 파일 필요
 
 ## 실행
-backend 폴더에서 powershell / cmd
-docker compose down -v
-docker compose up --build
+- backend 폴더에서 powershell / cmd
+- docker compose down -v
+- docker compose up --build
 
 ## 프론트 연결용 api
-POST /api/v1/jobs \n
-GET /api/v1/jobs/{job_id} \n
-GET /api/v1/jobs/{job_id}/result \n
+- POST /api/v1/jobs \n
+- GET /api/v1/jobs/{job_id} \n
+- GET /api/v1/jobs/{job_id}/result \n
