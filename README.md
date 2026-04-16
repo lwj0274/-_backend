@@ -16,6 +16,10 @@
 - docker compose up --build
 
 ## 프론트 연결용 api
-- POST /api/v1/jobs \n
-- GET /api/v1/jobs/{job_id} \n
-- GET /api/v1/jobs/{job_id}/result \n
+- POST /api/v1/jobs
+- GET /api/v1/jobs/{job_id}
+- GET /api/v1/jobs/{job_id}/result
+
+## 주의사항
+- .env 확인
+- 프론트는 우선 더미 결과 기준으로 연결 가능
