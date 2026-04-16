@@ -1,9 +1,9 @@
 ## 현재 상태
-Docker 실행 가능\n
-PostgreSQL 연결 완료\n
-백엔드 docs 확인 가능: http://localhost:8000/docs \n
-AI 더미 서버 확인 가능: http://localhost/ai/health \n
-정적 파일 예시: http://localhost/static/result.glb \n
+- Docker 실행 가능
+- PostgreSQL 연결 완료
+- 백엔드 docs 확인 가능: http://localhost:8000/docs
+- AI 더미 서버 확인 가능: http://localhost/ai/health
+- 정적 파일 예시: http://localhost/static/result.glb
 
 ## 실행 전 준비
 - Docker Desktop 실행
