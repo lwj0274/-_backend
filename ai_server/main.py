@@ -28,9 +28,18 @@ async def generate_3d_model(request: GenerateRequest):
     return {
         "status": "success",
         "message": "3D 모델 생성완료.",
-        "data" : {
-            "job_id": request.job_id,
-            "image_url": "http://localhost/static/result.glb",
+        "data": {
+            "task_id": request.job_id,
+            "model_mesh": {
+                "file_size": 6744644,
+                "content_type": "application/octet-stream",
+                "url": "http://localhost/static/result.glb"
+            },
+            "rendered_image": {
+                "file_size": 13718,
+                "content_type": "image/webp",
+                "url": "http://localhost/static/result.glb"
+            }
         }
     }
 

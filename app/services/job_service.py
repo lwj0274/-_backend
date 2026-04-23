@@ -24,6 +24,10 @@ def get_job(db: Session, job_id: str):
     return db.query(Job).filter(Job.job_id == job_id).first()
 
 
+def get_all_jobs(db: Session):
+    return db.query(Job).order_by(Job.created_at.desc()).all()
+
+
 def update_job_status(db: Session, job_id: str, status: str):
     job = get_job(db, job_id)
     if job:
@@ -33,10 +37,20 @@ def update_job_status(db: Session, job_id: str, status: str):
     return job
 
 
-def update_job_result(db: Session, job_id: str, result_image_path: str):
+def update_job_result(
+        db: Session,
+        job_id: str,
+        result_image_path: str,
+        model_mesh_url: str = None,
+        preview_image_url: str = None,
+        task_id: str = None
+):
     job = get_job(db, job_id)
     if job:
         job.result_image_path = result_image_path
+        job.model_mesh_url = model_mesh_url
+        job.preview_image_url = preview_image_url
+        job.task_id = task_id
         job.status = "COMPLETED"
         db.commit()
         db.refresh(job)
