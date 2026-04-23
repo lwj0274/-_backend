@@ -1,13 +1,50 @@
 import os
 import uuid
+import httpx
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
 from sqlalchemy.orm import Session
+
 from app.schemas.job import JobCreateResponse, JobStatusResponse, JobResultResponse
-from app.services.job_service import create_job, get_job
+from app.services.job_service import (
+    create_job,
+    get_job,
+    update_job_status,
+    update_job_result,
+    update_job_error,
+)
 from app.services.file_service import save_uploaded_file
 from app.db.session import get_db
 
 router = APIRouter(prefix="/api/v1/jobs", tags=["Jobs"])
+
+
+def trigger_ai_server(db: Session, job_id: str, user_image_path: str, cloth_image_path: str):
+    try:
+        update_job_status(db, job_id, "PROCESSING")
+
+        response = httpx.post(
+            "http://ai_server:9002/ai/mannequin/generate",
+            json={
+                "job_id": job_id,
+                "body_image_url": user_image_path,
+                "clothing_image_url": cloth_image_path,
+            },
+            timeout=30.0,
+        )
+
+        if response.status_code == 200:
+            result_data = response.json()
+            image_url = result_data["data"]["image_url"]
+            updated_job = update_job_result(db, job_id, image_url)
+            return updated_job
+        else:
+            error_message = f"AI server failed with status {response.status_code}"
+            updated_job = update_job_error(db, job_id, error_message)
+            return updated_job
+
+    except Exception as e:
+        updated_job = update_job_error(db, job_id, f"AI processing failed: {str(e)}")
+        return updated_job
 
 
 @router.post("", response_model=JobCreateResponse)
@@ -52,10 +89,17 @@ def create_new_job(
     save_uploaded_file(user_image, user_save_path)
     save_uploaded_file(cloth_image, cloth_save_path)
 
-    job = create_job(
+    create_job(
         db=db,
         job_id=job_id,
         category=category,
+        user_image_path=user_save_path,
+        cloth_image_path=cloth_save_path
+    )
+
+    job = trigger_ai_server(
+        db=db,
+        job_id=job_id,
         user_image_path=user_save_path,
         cloth_image_path=cloth_save_path
     )
